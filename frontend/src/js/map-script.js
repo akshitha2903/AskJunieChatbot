@@ -117,19 +117,7 @@ function generateItinerary() {
     })
     .then(response => response.json())
     .then(data => {
-        if (data.type === 'itinerary' && data.content.success) {
-            // If it's an itinerary, display route and markers
-            displayResults(data.content);
-            addMessageToChat('assistant', data.content.itinerary_text);
-        } else if (data.type === 'conversation') {
-            // If it's a conversation, display the text response
-            addMessageToChat('assistant', data.content.response);
-        }
-
-        // Update trip details display if provided
-        if (data.trip_details) {
-            updateTripDetailsDisplay(data.trip_details);
-        }
+        addMessageToChat('assistant', data.response);
     })
     .catch(error => {
         console.error('Error:', error);
@@ -142,9 +130,16 @@ function addMessageToChat(role, message) {
     const messageElement = document.createElement('div');
     messageElement.classList.add('chat-message', role);
     
-    // Create message content
-    const messageContent = document.createElement('p');
-    messageContent.textContent = message;
+    // Create message content with proper formatting
+    const messageContent = document.createElement('div');
+    messageContent.classList.add('message-content');
+    
+    // Support for markdown-style formatting
+    const formattedMessage = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold
+                                   .replace(/\*(.*?)\*/g, '<em>$1</em>')                // Italic
+                                   .replace(/\n/g, '<br>');                             // Line breaks
+    
+    messageContent.innerHTML = formattedMessage;
     
     // Create role indicator
     const roleIndicator = document.createElement('span');
