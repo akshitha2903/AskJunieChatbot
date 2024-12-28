@@ -1,0 +1,7 @@
+pandas
+numpy
+langchain
+langchain-openai
+faiss-cpu
+geopy
+pydantic 
